@@ -1,28 +1,9 @@
 #!/usr/bin/env python3
-import os
-
 import aws_cdk as cdk
-
-from cdk_lexora.cdk_lexora_stack import CdkLexoraStack
-
+from stacks.lexora_users_stack import LexoraUsersStack
 
 app = cdk.App()
-CdkLexoraStack(app, "CdkLexoraStack",
-    # If you don't specify 'env', this stack will be environment-agnostic.
-    # Account/Region-dependent features and context lookups will not work,
-    # but a single synthesized template can be deployed anywhere.
-
-    # Uncomment the next line to specialize this stack for the AWS Account
-    # and Region that are implied by the current CLI configuration.
-
-    #env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
-
-    # Uncomment the next line if you know exactly what Account and Region you
-    # want to deploy the stack to. */
-
-    #env=cdk.Environment(account='123456789012', region='us-east-1'),
-
-    # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-    )
-
+LexoraUsersStack(app, "LexoraUsersStack", env=cdk.Environment(
+    region="ap-northeast-2", account="571600839644"
+))
 app.synth()
