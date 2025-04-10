@@ -56,3 +56,5 @@ command.
  * `cdk docs`        open CDK documentation
 
 Enjoy!
+
+CORS 설정, API Key, 인증, Swagger Docs, WAF 등도 확장 가능
