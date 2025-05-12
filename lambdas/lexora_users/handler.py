@@ -7,9 +7,6 @@ import time
 import os
 from decimal import Decimal
 
-##변경테스트
-aiden= 1
-
 # AWS DynamoDB 클라이언트
 dynamodb = boto3.resource("dynamodb")
 users_table = dynamodb.Table("lexora-users")
@@ -19,7 +16,7 @@ verification_table = dynamodb.Table("lexora-verification-tokens")
 ses_client = boto3.client("ses", region_name="ap-northeast-2")
 
 EMAIL_SENDER = os.getenv("EMAIL_SENDER", "lexora02095@gmail.com")
-BASE_URL = os.getenv("EMAIL_VERIFY_URL", "https://lexora.ai/verify-email")
+BASE_URL = os.getenv("EMAIL_VERIFY_URL", "https://lexora.cloud/verify-email")
 
 # 환경 변수에서 salt key 가져오기
 SALT_KEY = os.getenv("SALT_KEY", "your-default-salt")
@@ -27,7 +24,7 @@ SALT_KEY = os.getenv("SALT_KEY", "your-default-salt")
 def response(success, message, data=None, error=None, status_code=200):
     body = {"success": success, "message": message}
     if data is not None:
-        body["data"] = data
+        body["data"] = convert_decimals(data)
     if error is not None:
         body["error"] = error
     return {
@@ -179,7 +176,6 @@ def login(event, context):
         )
 
         user.pop("passwordHash", None)
-        user = convert_decimals(user)
 
         if user.get("status") == "unverified":
             return response(False, "이메일 인증이 필요합니다.", data={
@@ -252,7 +248,7 @@ def get_me(event, context):
             return response(False, "사용자를 찾을 수 없습니다.", status_code=404)
 
         user.pop("passwordHash", None)
-        return response(True, "사용자 정보 조회 성공", data=convert_decimals(user))
+        return response(True, "사용자 정보 조회 성공", data=user)
 
 
     except Exception as e:

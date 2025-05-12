@@ -1,5 +1,6 @@
 {
   "app": "python3 app.py",
+  "defaultRegion": "ap-northeast-2",
   "watch": {
     "include": [
       "**"
