@@ -8,7 +8,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 소스 코드 복사
-COPY handler.py ${LAMBDA_TASK_ROOT}
+COPY handler.py utils.py ${LAMBDA_TASK_ROOT}
 
 # 핸들러 설정
 CMD ["handler.lambda_handler"]

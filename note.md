@@ -146,14 +146,31 @@ curl -X GET "https://lzh1iiwotb.execute-api.ap-northeast-2.amazonaws.com/default
 
 
 
-curl -X POST https://5txrsesstc.execute-api.ap-northeast-2.amazonaws.com/prod/query \
+❯ curl -X POST https://5txrsesstc.execute-api.ap-northeast-2.amazonaws.com/prod/query \
   -H "Content-Type: application/json" \
-  -H "Authorization: 8bf45b95-0a70-43a4-854d-8472ca491375" \
+  -H "Authorization: 603f3a5d-ba25-4597-8a3e-7999c5bae8c6" \
   -d '{
         "prompt": "문서내용 요약해",
         "fileIds": ["1edb4f8d-93ff-43ac-ba49-080028a7af32"]
       }'
 
+❯ curl -X POST https://5txrsesstc.execute-api.ap-northeast-2.amazonaws.com/prod/generate_query \
+  -H "Content-Type: application/json" \
+  -H "Authorization: 603f3a5d-ba25-4597-8a3e-7999c5bae8c6" \
+  -d '{
+        "fileIds": ["1edb4f8d-93ff-43ac-ba49-080028a7af32"]
+      }'
+
+
+
+
+curl -X POST https://y0mqvx0h5e.execute-api.ap-northeast-2.amazonaws.com/prod/query-session \
+  -H "Authorization: 74ee6d43-5a77-4295-897d-2a1bb6842fda" \
+  -H "Content-Type: application/json" \
+  -d '{"sessionTitle": "나의 새 질의 세션"}'
+
+curl -X GET https://y0mqvx0h5e.execute-api.ap-northeast-2.amazonaws.com/prod/query-session \
+  -H "Authorization: 74ee6d43-5a77-4295-897d-2a1bb6842fda"
 
 
 
@@ -177,14 +194,35 @@ extract queue-> processing -> EmbedQueue
 5	[임베딩 생성]	lexora-doc-embed	Bedrock Titan 등으로 각 chunk 임베딩 처리
 6	[벡터 저장]	lexora-doc-embed	벡터와 메타데이터를 OpenSearch에 저장
 
-7	[AI 질의 응답]	lexora-query-handler (또는 lexora-doc-query)	사용자의 질문을 받아 relevant chunk 검색 후 LLM 호출
+7	[AI 질의 응답]	lexora-query-handler (또는 lexora-doc-query)	사용자의 질의를 받으면 대답을 함, query바탕으로 제목을 생성함, 기본 file을 바탕으로 추천질의 질문 생성
+8 [querysession 핸들러] lexora-query-session-handler query세션에 대해 생성 조회 이름변경 삭제등 지원
 
-❯ curl -X POST https://5txrsesstc.execute-api.ap-northeast-2.amazonaws.com/prod/query \
+
+
+
+curl -X POST https://5txrsesstc.execute-api.ap-northeast-2.amazonaws.com/prod/generate_query \
   -H "Content-Type: application/json" \
-  -H "Authorization: 8d1548b1-1bc5-46de-b0fa-1c60e7ac99d9" \
+  -H "Authorization: 74ee6d43-5a77-4295-897d-2a1bb6842fda" \
   -d '{
-        "prompt": "가산점내용 알려줘",
-        "fileIds": ["71d31ed8-7cec-48e7-89dd-d91e6c06f71a"]
+        "fileIds": ["1edb4f8d-93ff-43ac-ba49-080028a7af32"]
       }'
 
-{"success": true, "message": "질의 응답 완료", "data": {"querySessionId": "4cc490c6-7c15-4a1d-8fac-41b4f5bcef99", "isNewSession": true, "answer": "네, 가산점 관련 내용을 요약하면 다음과 같습니다:\n\n**가산점 내용**\n- 사회적 배려층, 외국어 성적, 기타 가점 항목 등에 대해 가산점이 부여됩니다. [1]\n- 사회적 배려층 대상 가산점은 중복 인정되며, 상한 없이 인정됩니다. [1]\n- 외국어 성적 가점은 최대 5점 이내에서 인정되며, 중복 가점도 5점을 초과할 수 없습니다. [1]\n- 인정되는 외국어 시험은 TOEIC, New TEPS, TOEFL/IBT, G-TELP(레벨 2), DALF, DELF, DELE, TORFL 등입니다. [1][3]\n- 기타 가점 항목으로는 자격증, 봉사활동, 보훈 관련 항목 등이 있습니다. [3]\n- 가산점 증빙서류는 지원서 접수 시 반드시 제출해야 합니다. [1]\n\n**Footnotes**\n[1] 출처: KOICA_모집공고.pdf / Chunk 9\n[3] 출처: KOICA_모집공고.pdf / Chunk 3", "sources": ["[1] 출처: koica 일반봉사단.pdf / Chunk 9", "[2] 출처: koica 일반봉사단.pdf / Chunk 5", "[3] 출처: koica 일반봉사단.pdf / Chunk 10", "[4] 출처: koica 일반봉사단.pdf / Chunk 11", "[5] 출처: koica 일반봉사단.pdf / Chunk 4", "[6] 출처: koica 일반봉사단.pdf / Chunk 6", "[7] 출처: koica 일반봉사단.pdf / Chunk 8", "[8] 출처: koica 일반봉사단.pdf / Chunk 3", "[9] 출처: koica 일반봉사단.pdf / Chunk 2", "[10] 출처: koica 일반봉사단.pdf / Chunk 19"]}}%
+
+curl -X POST https://y0mqvx0h5e.execute-api.ap-northeast-2.amazonaws.com/prod/query \
+  -H "Authorization: 74ee6d43-5a77-4295-897d-2a1bb6842fda" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "querySessionId": "4cc490c6-7c15-4a1d-8fac-41b4f5bcef99",
+    "prompt": "AI 모델이 생겨난 배경이 무엇인가요?"
+  }'
+
+
+
+curl -X POST https://5txrsesstc.execute-api.ap-northeast-2.amazonaws.com/prod/query \
+  -H "Authorization: 74ee6d43-5a77-4295-897d-2a1bb6842fda" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "querySessionId": "4cc490c6-7c15-4a1d-8fac-41b4f5bcef99",
+    "prompt": "지원 요건이 어떻게 되나요?",
+    "fileIds": ["1edb4f8d-93ff-43ac-ba49-080028a7af32"]
+  }'

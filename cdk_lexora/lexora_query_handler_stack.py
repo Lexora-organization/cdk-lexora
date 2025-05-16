@@ -89,10 +89,16 @@ class LexoraQueryHandlerStack(Stack):
 
         query_fn.add_to_role_policy(
             iam.PolicyStatement(
-                actions=["bedrock:InvokeModel"],
-                resources=["*"],  # 필요시 리전 기반으로 제한 가능
+                actions=[
+                    "bedrock:InvokeModel",
+                    "bedrock:InvokeModelWithResponseStream"
+                ],
+                resources=["*"]  # ← 여기가 모든 모델 사용 허용
             )
         )
+
+
+
 
         query_fn.add_to_role_policy(
             iam.PolicyStatement(

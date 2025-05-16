@@ -6,6 +6,7 @@ from cdk_lexora.lexora_doc_convpdf_stack import LexoraDocConvpdfStack
 from cdk_lexora.lexora_doc_extract_stack import LexoraDocExtractStack
 from cdk_lexora.lexora_doc_embed_stack import LexoraDocEmbedStack
 from cdk_lexora.lexora_query_handler_stack import LexoraQueryHandlerStack
+from cdk_lexora.lexora_query_session_handler_stack import LexoraQuerySessionHandlerStack
 
 app = cdk.App()
 
@@ -17,6 +18,7 @@ env = cdk.Environment(
 
 # 공통 리소스 설정
 files_table_name = "lexora-files"
+user_sessions_table_name = "lexora-sessions"
 query_sessions_table_name = "lexora-query-sessions"
 opensearch_endpoint = "vpc-lexora-embed-index-mlbu2ea3gkp7l3fbphhabxpuje.ap-northeast-2.es.amazonaws.com"
 opensearch_index = "lexora-doc-embed-v1"
@@ -49,6 +51,15 @@ LexoraQueryHandlerStack(
     query_sessions_table_name=query_sessions_table_name,
     opensearch_endpoint=opensearch_endpoint,
     opensearch_index=opensearch_index
+)
+
+# ⑥ 쿼리 세션 관리 (생성, 목록, 수정, 삭제 등)
+LexoraQuerySessionHandlerStack(
+    app,
+    "LexoraQuerySessionHandlerStack",
+    env=env,
+    query_sessions_table_name=query_sessions_table_name,
+    user_sessions_table_name=user_sessions_table_name  # 추가됨
 )
 
 app.synth()
